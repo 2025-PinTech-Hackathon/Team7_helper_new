@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.team7_realhelper"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.team7_realhelper"
