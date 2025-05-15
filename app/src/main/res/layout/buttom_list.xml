@@ -15,7 +15,7 @@
         <Button
             android:id="@+id/송금btn"
             android:layout_width="110dp"
-            android:layout_height="38dp"
+            android:layout_height="48dp"
             android:text="송금"
             android:gravity="center"
             android:paddingTop="0dp"
@@ -24,7 +24,7 @@
         <Button
             android:id="@+id/큐알btn"
             android:layout_width="110dp"
-            android:layout_height="38dp"
+            android:layout_height="48dp"
             android:text="큐알 결제"
             android:layout_marginTop="2dp"
             android:gravity="center"
@@ -34,7 +34,7 @@
         <Button
             android:id="@+id/음성btn"
             android:layout_width="110dp"
-            android:layout_height="38dp"
+            android:layout_height="48dp"
             android:text="음성"
             android:layout_marginTop="2dp"
             android:gravity="center"
