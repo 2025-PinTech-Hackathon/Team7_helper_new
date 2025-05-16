@@ -3,6 +3,7 @@ package com.example.team7_realhelper.Overlay;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,7 +53,6 @@ public class OverlayIcon {
         params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = 100;
         params.y = 100;
-
         
         // 터치 리스너
         overlayIcon.setOnTouchListener(new View.OnTouchListener() {
@@ -78,6 +78,7 @@ public class OverlayIcon {
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY + (int) (event.getRawY() - initialTouchY);
                         windowManager.updateViewLayout(overlayIcon, params);       // 위치 갱신
+
 
                         if(!firstClick){
                             manager.iconPositionChanged(params.x,params.y);   // 위치변경알림

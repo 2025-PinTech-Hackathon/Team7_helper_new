@@ -18,7 +18,7 @@ public class MyReceiver extends BroadcastReceiver {
             String screenName = payload.getString("screen");
             JSONArray buttonArray = payload.getJSONArray("buttons");
 
-            Log.d("AppB", "수신된 화면: " + screenName);
+            Log.d("HelperApp_Real", "수신된 화면: " + screenName);
             for (int i = 0; i < buttonArray.length(); i++) {
                 JSONObject btn = buttonArray.getJSONObject(i);
                 String id = btn.getString("id");
@@ -27,7 +27,7 @@ public class MyReceiver extends BroadcastReceiver {
                 int width = btn.getInt("width");
                 int height = btn.getInt("height");
 
-                Log.d("AppB", screenName + " - 버튼[" + id + "] 위치: (" + x + ", " + y + "), 크기: " + width + "x" + height);
+                Log.d("MyBroadcast", screenName + " - 버튼[" + id + "] 위치: (" + x + ", " + y + "), 크기: " + width + "x" + height);
             }
         } catch (JSONException e) {
             e.printStackTrace();
