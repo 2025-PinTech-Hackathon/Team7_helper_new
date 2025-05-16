@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Team7_RealHelper"
         tools:targetApi="31">
-        <service android:name=".OverlayService" android:exported="false" />
+        <service android:name=".Overlay.OverlayService" android:exported="false" />
 
         <activity
             android:name=".MainActivity"
