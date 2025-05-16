@@ -1,16 +1,37 @@
 package com.example.team7_realhelper;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.team7_realhelper.Overlay.OverlayService;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.example.team7_realhelper.chatbot.ChatbotService;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.dialogflow.v2.*;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
+
+import okhttp3.*;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+        //챗봇 테스트
+        //ChatbotService.sendMessageToChatbot(this, "결제 어디 있어");
+
         // 권한 있으면
         startOverlayService();   // 오버레이 서비스 시작
         finish();

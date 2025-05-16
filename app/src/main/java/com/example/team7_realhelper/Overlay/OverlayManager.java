@@ -65,9 +65,14 @@ public class OverlayManager {
         return overlayIcon.getY();
     }
 
+    public  void setFirstClick(boolean bool){
+        overlayIcon.firstClick=bool;
+    }
+
     public void iconPositionChanged(int x, int y) {
         overlayButton.updatePosition(x, y + 150);
     }
+
 
     public void showHighlightWithTooltip(int x, int y) {
         highlightView = new View(context);
