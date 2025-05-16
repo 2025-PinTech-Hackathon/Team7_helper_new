@@ -74,17 +74,35 @@ public class OverlayManager {
     }
 
 
-    public void showHighlightWithTooltip(int x, int y) {
+    public void showHighlightWithTooltip(int x, int y, int width, int height) {
+        // ✅ 기존 View 먼저 제거 (중복 강조 방지)
+        if (highlightView != null) {
+            try {
+                windowManager.removeViewImmediate(highlightView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            highlightView = null;
+        }
+        if (tooltipView != null) {
+            try {
+                windowManager.removeViewImmediate(tooltipView);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            tooltipView = null;
+        }
+
+        // ✅ 새로운 강조 View 생성
         highlightView = new View(context);
         highlightView.setBackgroundResource(R.drawable.highlight_border);
 
-        // 화면 중앙 높이 계산
         int screenHeight = windowManager.getDefaultDisplay().getHeight();
         int highlightX = x;
         int highlightY = screenHeight / 2 - y;
 
         WindowManager.LayoutParams highlightParams = new WindowManager.LayoutParams(
-                150, 150,
+                width, height,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
                         WindowManager.LayoutParams.TYPE_PHONE,
@@ -99,7 +117,7 @@ public class OverlayManager {
 
         tooltipView = new TextView(context);
         tooltipView.setText("여기를 눌러보세요");
-        tooltipView.setTextColor(0xFFFFFFFF); // white
+        tooltipView.setTextColor(0xFFFFFFFF);
         tooltipView.setBackgroundResource(R.drawable.tooltip_bg);
         tooltipView.setPadding(24, 16, 24, 16);
         tooltipView.setTextSize(14f);
@@ -119,23 +137,29 @@ public class OverlayManager {
 
         windowManager.addView(tooltipView, tooltipParams);
 
-        // 깜빡임 애니메이션
+        // 🔁 깜빡임 애니메이션
         ObjectAnimator blinkAnim = ObjectAnimator.ofFloat(highlightView, "alpha", 1f, 0f);
         blinkAnim.setDuration(700);
         blinkAnim.setRepeatMode(ValueAnimator.REVERSE);
         blinkAnim.setRepeatCount(ValueAnimator.INFINITE);
         blinkAnim.start();
 
+        // ⏱️ 3초 후 View 제거
         new Handler().postDelayed(() -> {
-            if (highlightView != null) {
-                blinkAnim.cancel();
-                windowManager.removeView(highlightView);
-                highlightView = null;
-            }
-            if (tooltipView != null) {
-                windowManager.removeView(tooltipView);
-                tooltipView = null;
+            try {
+                if (highlightView != null) {
+                    blinkAnim.cancel();
+                    windowManager.removeViewImmediate(highlightView);
+                    highlightView = null;
+                }
+                if (tooltipView != null) {
+                    windowManager.removeViewImmediate(tooltipView);
+                    tooltipView = null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }, 3000);
     }
+
 }
