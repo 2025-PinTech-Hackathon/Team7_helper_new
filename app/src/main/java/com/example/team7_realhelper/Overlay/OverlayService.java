@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+
 import androidx.annotation.Nullable;
 
 import com.example.team7_realhelper.R;
@@ -32,6 +33,18 @@ public class OverlayService extends Service {
         overlayManager.showIcon();
 
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // 좌표 전달 받기
+        int x = intent.getIntExtra("x", 300);
+        int y = intent.getIntExtra("y", 700);
+
+        overlayManager.showHighlightWithTooltip(x, y);
+
+        return START_NOT_STICKY;
+    }
+
 
     @Override
     public void onDestroy() {
