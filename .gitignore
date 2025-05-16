@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-app/src/main/assets/your-service-account-key.json
+app/src/main/assets/chatbot_key.json

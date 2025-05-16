@@ -21,7 +21,7 @@ public class ChatbotService {
     }
 
 
-    public static void sendMessageToChatbot(Context context, String messageText) {
+    public static void sendMessageToChatbot(Context context, String messageText, ChatbotCallback callback) {
         new Thread(() -> {
             try {
                 String accessToken = getAccessToken(context); // 위에서 만든 메서드
@@ -53,16 +53,27 @@ public class ChatbotService {
                 Response response = client.newCall(request).execute();
                 if (response.isSuccessful()) {
                     String responseBody = response.body().string();
-                    Log.d("DF", "Response: " + responseBody);
+
+                    // 파싱 시작
+                    JsonObject json = JsonParser.parseString(responseBody).getAsJsonObject();
+                    JsonObject queryResult = json.getAsJsonObject("queryResult");
+
+                    //fulfillmentText 사용
+                    if (queryResult.has("fulfillmentText")) {
+                        String chatbotReply = queryResult.get("fulfillmentText").getAsString();
+                        Log.d("VC", "Chatbot Reply: " + chatbotReply);
+                        callback.onResponse(chatbotReply);
+                    }
+
                 } else {
-                    Log.e("DF", "Error: " + response.code());
+                    Log.e("VC", "Error: " + response.code());
+                    callback.onError("error");
                 }
 
             } catch (Exception e) {
-                Log.e("DF", "Ep: " + e.toString());
+                Log.e("VC", "Ep: " + e.toString());
+                callback.onError("error");
             }
         }).start();
     }
-
 }
-

@@ -1,7 +1,9 @@
 package com.example.team7_realhelper.Overlay;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
@@ -15,6 +17,7 @@ import android.os.Handler;
 
 import androidx.annotation.Nullable;
 
+import com.example.team7_realhelper.OverlayControlReceiver;
 import com.example.team7_realhelper.R;
 
 // 백그라운드에서 실행되는 서비스
@@ -25,15 +28,29 @@ public class OverlayService extends Service {
     private OverlayIcon overlayIcon;
 
     private OverlayManager overlayManager;
+    private OverlayControlReceiver receiver;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+
         overlayManager = new OverlayManager(this);
+
+        receiver = new OverlayControlReceiver(overlayManager);
+        //IntentFilter filter = new IntentFilter("com.example.ACTION_REMOVE_OVERLAY");
+        //registerReceiver(receiver, filter,Context.RECEIVER_NOT_EXPORTED);
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, new IntentFilter("com.example.ACTION_REMOVE_OVERLAY"), Context.RECEIVER_EXPORTED);
+        }*/
+
+        registerReceiver(receiver, new IntentFilter("com.example.ACTION_REMOVE_OVERLAY"), Context.RECEIVER_EXPORTED);
+
+
         overlayManager.showIcon();
 
     }
+
     private void showHighlightsSequentially(int[] x, int[] y, int[] width, int[] height, int index) {
         if (index >= x.length || x[index] == -1 || y[index] == -1) return;
 
