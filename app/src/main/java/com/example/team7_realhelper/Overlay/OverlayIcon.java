@@ -102,4 +102,13 @@ public class OverlayIcon {
             overlayIcon = null;
         }
     }
+
+    // 아이콘 좌표 얻어오기
+    public int getX(){
+        return params.x;
+    }
+
+    public int getY(){
+        return params.y;
+    }
 }

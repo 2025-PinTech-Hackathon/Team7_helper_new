@@ -27,4 +27,12 @@ public class OverlayManager {
         overlayIcon.remove();
         overlayButton.remove();
     }
+
+    public int getIconX(){
+        return overlayIcon.getX();
+    }
+
+    public int getIconY(){
+        return overlayIcon.getY();
+    }
 }

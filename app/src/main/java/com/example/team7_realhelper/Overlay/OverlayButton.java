@@ -43,8 +43,8 @@ public class OverlayButton {
         voiceBtn=new Button(context);
         voiceBtn.setText("음성");
 
-        int baseX = 100; // 좌측 위치 (x좌표)
-        int baseY = 100; // 첫 번째 버튼의 y좌표 시작 위치
+        int baseX = manager.getIconX();  // 좌측 위치 (x좌표)
+        int baseY = manager.getIconY(); // 첫 번째 버튼의 y좌표 시작 위치
         int buttonHeight = 100; // 버튼 높이 (LayoutParams 높이와 동일)
 
         sendParams = new WindowManager.LayoutParams(
