@@ -2,8 +2,11 @@ package com.example.team7_realhelper.Overlay;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -52,17 +55,23 @@ public class OverlayButton {
 
         sendBtn.setMinHeight(0);
         sendBtn.setMinWidth(0);
-        sendBtn.setPadding(8,4,8,4);
+        sendBtn.setPadding(0,0,0,0);
+        qrBtn.setMinHeight(0);
+        qrBtn.setMinWidth(0);
+        qrBtn.setPadding(0,0,0,0);
+        voiceBtn.setMinHeight(0);
+        voiceBtn.setMinWidth(0);
+        voiceBtn.setPadding(0,0,0,0);
 
-
-        int baseX = manager.getIconX();  // 좌측 위치 (x좌표)
+        int baseX = manager.getIconX()-40;  // 좌측 위치 (x좌표)
         int baseY = manager.getIconY()+150; // 첫 번째 버튼의 y좌표 시작 위치
-        int buttonHeight = 100; // 버튼 높이 (LayoutParams 높이와 동일)
+        int buttonHeight = 60; // 버튼 높이 (LayoutParams 높이와 동일)
+        int buttonWidth=250;
 
         sendParams = new WindowManager.LayoutParams(
                 //WindowManager.LayoutParams.WRAP_CONTENT,
                 //WindowManager.LayoutParams.WRAP_CONTENT,
-                150,95,
+                buttonWidth,buttonHeight,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
                         WindowManager.LayoutParams.TYPE_PHONE,
@@ -74,7 +83,7 @@ public class OverlayButton {
         sendParams.y = baseY;
 
         qrParams = new WindowManager.LayoutParams(
-                150,95,
+                buttonWidth,buttonHeight,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
                         WindowManager.LayoutParams.TYPE_PHONE,
@@ -86,7 +95,7 @@ public class OverlayButton {
         qrParams.y = baseY + buttonHeight; // 첫 번째 버튼 아래
 
         voiceParams = new WindowManager.LayoutParams(
-                150,95,
+                buttonWidth,buttonHeight,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
                         WindowManager.LayoutParams.TYPE_PHONE,
@@ -104,16 +113,17 @@ public class OverlayButton {
     }
 
     public void updatePosition(int x,int y){
-        sendParams.x=x;
+        int buttonHeight = 60;
+        sendParams.x=x-40;
         sendParams.y=y;
         windowManager.updateViewLayout(sendBtn,sendParams);
 
-        qrParams.x=x;
-        qrParams.y=y+100;
+        qrParams.x=x-40;
+        qrParams.y=y+buttonHeight;
         windowManager.updateViewLayout(qrBtn,qrParams);
 
-        voiceParams.x=x;
-        voiceParams.y=y+200;
+        voiceParams.x=x-40;
+        voiceParams.y=y+buttonHeight*2;
         windowManager.updateViewLayout(voiceBtn,voiceParams);
 
     }
