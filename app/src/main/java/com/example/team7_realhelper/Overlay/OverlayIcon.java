@@ -56,6 +56,7 @@ public class OverlayIcon {
         overlayIcon.setOnTouchListener(new View.OnTouchListener() {
             private int initialX, initialY;
             private float initialTouchX, initialTouchY;
+            private boolean firstClick=true;   // 몇번째 클릭인지
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -83,7 +84,14 @@ public class OverlayIcon {
                         float dy = event.getRawY() - initialTouchY;
 
                         if (touchDuration < CLICK_THRESHOLD && Math.abs(dx) < 10 && Math.abs(dy) < 10) {    // 짧은 터치 시간 + 거의 안움직임
-                            manager.showButton();   // 버튼 오버레이로 전환 요청
+                            if(firstClick){
+                                manager.showButton();   // 버튼 오버레이로 전환 요청
+                                firstClick=!firstClick;
+                            }else{
+                                manager.removeButton();
+                                firstClick=!firstClick;
+                            }
+
                         }
                         return true;
                 }

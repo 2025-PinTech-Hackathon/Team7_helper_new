@@ -19,8 +19,12 @@ public class OverlayManager {
 
     // 버튼 오버레이 띄우기
     public void showButton() {
-        overlayIcon.remove();
+        //overlayIcon.remove();
         overlayButton.show();
+    }
+
+    public void removeButton() {
+        overlayButton.remove();
     }
 
     public void removeAll() {
