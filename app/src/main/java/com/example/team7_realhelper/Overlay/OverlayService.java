@@ -5,9 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
-
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -30,7 +30,11 @@ public class OverlayService extends Service {
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .build();
 
-        startForeground(1, notification);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {  // API 29 이상
+            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+        } else {
+            startForeground(1, notification);
+        }
 
         // 오버레이 매니저 초기화 및 아이콘 보여주기
         overlayManager = new OverlayManager(this);
@@ -51,7 +55,6 @@ public class OverlayService extends Service {
         }
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 좌표 전달 받기
@@ -59,7 +62,7 @@ public class OverlayService extends Service {
         int y = intent.getIntExtra("y", -1);
 
         // 좌표가 유효할 때만 강조 표시 실행
-        if (x != -1 && y != -1) {
+        if (x != -1 && y != -1 && overlayManager != null) {
             overlayManager.showHighlightWithTooltip(x, y);
         }
 
