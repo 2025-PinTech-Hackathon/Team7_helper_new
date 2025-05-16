@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+import android.content.Intent;
 
 import com.example.team7_realhelper.R;
 
@@ -110,26 +111,38 @@ public class OverlayButton {
 
         // 버튼 클릭 이벤트
         // 송금 버튼 클릭 시
-        sendBtn.setOnClickListener(v->{
-            remove();  // 버튼지우고
-            manager.setFirstClick(true);   // 다음 클릭시 버튼 다시 뜸
+        sendBtn.setOnClickListener(v -> {
+            remove();
+            manager.setFirstClick(true);
 
+            // 좌표 넘겨서 강조 요청
+            Intent intent = new Intent(context, OverlayService.class);
+            intent.putExtra("x", 80);   // 송금 버튼 강조 좌표
+            intent.putExtra("y", 140);  // 실제 강조 Y 좌표
+            context.startService(intent);
         });
 
         // qr버튼 클릭 시
-        qrBtn.setOnClickListener(v->{
+        // QR 버튼 클릭 시
+        qrBtn.setOnClickListener(v -> {
             remove();
             manager.setFirstClick(true);
 
-
+            Intent intent = new Intent(context, OverlayService.class);
+            intent.putExtra("x", 870);  // QR 버튼에 맞는 좌표로 수정
+            intent.putExtra("y", 400); // 필요시 조정
+            context.startService(intent);
         });
 
         // 음성 버튼 클릭 시
-        voiceBtn.setOnClickListener(v->{
+        voiceBtn.setOnClickListener(v -> {
             remove();
             manager.setFirstClick(true);
 
-            
+            Intent intent = new Intent(context, OverlayService.class);
+            intent.putExtra("x", 80);  // 음성 버튼에 맞는 좌표로 수정
+            intent.putExtra("y", 700); // 필요시 조정
+            context.startService(intent);
         });
 
 
