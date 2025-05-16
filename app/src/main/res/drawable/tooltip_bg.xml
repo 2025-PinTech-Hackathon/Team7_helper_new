@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#4DFF0000" /> <!-- 연한 빨간색 (#FF0000, 알파 0x4D = 30%) -->
+    <corners android:radius="12dp" />
+    <padding android:left="10dp" android:right="10dp"
+        android:top="6dp" android:bottom="6dp" />
+</shape>

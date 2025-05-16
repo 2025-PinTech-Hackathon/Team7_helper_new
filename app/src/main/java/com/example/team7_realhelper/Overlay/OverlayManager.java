@@ -1,25 +1,39 @@
 package com.example.team7_realhelper.Overlay;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
+import android.os.Build;
+import android.os.Handler;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+
+import com.example.team7_realhelper.R;
 
 public class OverlayManager {
     private final Context context;
-    private OverlayIcon overlayIcon;
-    private OverlayButton overlayButton;
+    private final OverlayIcon overlayIcon;
+    private final OverlayButton overlayButton;
+    private final WindowManager windowManager;
+
+    private View highlightView;
+    private TextView tooltipView;
 
     public OverlayManager(Context context) {
         this.context = context;
-        overlayIcon = new OverlayIcon(context, this);
-        overlayButton = new OverlayButton(context, this);
+        this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        this.overlayIcon = new OverlayIcon(context, this);
+        this.overlayButton = new OverlayButton(context, this);
     }
 
     public void showIcon() {
         overlayIcon.show();
     }
 
-    // 버튼 오버레이 띄우기
     public void showButton() {
-        //overlayIcon.remove();
         overlayButton.show();
     }
 
@@ -30,18 +44,86 @@ public class OverlayManager {
     public void removeAll() {
         overlayIcon.remove();
         overlayButton.remove();
+
+        if (highlightView != null) {
+            windowManager.removeView(highlightView);
+            highlightView = null;
+        }
+        if (tooltipView != null) {
+            windowManager.removeView(tooltipView);
+            tooltipView = null;
+        }
     }
 
-    public int getIconX(){
+    public int getIconX() {
         return overlayIcon.getX();
     }
 
-    public int getIconY(){
+    public int getIconY() {
         return overlayIcon.getY();
     }
 
-    // 아이콘 위치 변경시 호출
-    public void iconPositionChanged(int x,int y){
-        overlayButton.updatePosition(x,y+150);
+    public void iconPositionChanged(int x, int y) {
+        overlayButton.updatePosition(x, y + 150);
+    }
+
+    public void showHighlightWithTooltip(int x, int y) {
+        highlightView = new View(context);
+        highlightView.setBackgroundResource(R.drawable.highlight_border);
+
+        WindowManager.LayoutParams highlightParams = new WindowManager.LayoutParams(
+                150, 150,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
+                        WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT
+        );
+        highlightParams.gravity = Gravity.TOP | Gravity.LEFT;
+        highlightParams.x = x;
+        highlightParams.y = y;
+
+        windowManager.addView(highlightView, highlightParams);
+
+        tooltipView = new TextView(context);
+        tooltipView.setText("여기를 눌러보세요");
+        tooltipView.setTextColor(0xFFFFFFFF); // white
+        tooltipView.setBackgroundResource(R.drawable.tooltip_bg);
+        tooltipView.setPadding(24, 16, 24, 16);
+        tooltipView.setTextSize(14f);
+
+        WindowManager.LayoutParams tooltipParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
+                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY :
+                        WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT
+        );
+        tooltipParams.gravity = Gravity.TOP | Gravity.LEFT;
+        tooltipParams.x = x + 160;
+        tooltipParams.y = y;
+
+        windowManager.addView(tooltipView, tooltipParams);
+
+        // 깜빡임 애니메이션
+        ObjectAnimator blinkAnim = ObjectAnimator.ofFloat(highlightView, "alpha", 1f, 0f);
+        blinkAnim.setDuration(700);
+        blinkAnim.setRepeatMode(ValueAnimator.REVERSE);
+        blinkAnim.setRepeatCount(ValueAnimator.INFINITE);
+        blinkAnim.start();
+
+        new Handler().postDelayed(() -> {
+            if (highlightView != null) {
+                blinkAnim.cancel();
+                windowManager.removeView(highlightView);
+                highlightView = null;
+            }
+            if (tooltipView != null) {
+                windowManager.removeView(tooltipView);
+                tooltipView = null;
+            }
+        }, 20000);
     }
 }
