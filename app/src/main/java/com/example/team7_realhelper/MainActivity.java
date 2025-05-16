@@ -19,6 +19,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.team7_realhelper.chatbot.ChatbotService;
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.dialogflow.v2.*;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
+
+import okhttp3.*;
+
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1000;
@@ -46,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+        //챗봇 테스트
+        //ChatbotService.sendMessageToChatbot(this, "결제 어디 있어");
+
         // 권한 있으면
         startOverlayService();   // 오버레이 서비스 시작
         finish();
