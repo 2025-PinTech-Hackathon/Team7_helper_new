@@ -39,4 +39,9 @@ public class OverlayManager {
     public int getIconY(){
         return overlayIcon.getY();
     }
+
+    // 아이콘 위치 변경시 호출
+    public void iconPositionChanged(int x,int y){
+        overlayButton.updatePosition(x,y+150);
+    }
 }

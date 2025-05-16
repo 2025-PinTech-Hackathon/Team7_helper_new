@@ -103,6 +103,21 @@ public class OverlayButton {
         windowManager.addView(voiceBtn,voiceParams);
     }
 
+    public void updatePosition(int x,int y){
+        sendParams.x=x;
+        sendParams.y=y;
+        windowManager.updateViewLayout(sendBtn,sendParams);
+
+        qrParams.x=x;
+        qrParams.y=y+100;
+        windowManager.updateViewLayout(qrBtn,qrParams);
+
+        voiceParams.x=x;
+        voiceParams.y=y+200;
+        windowManager.updateViewLayout(voiceBtn,voiceParams);
+
+    }
+
 
     public void remove() {
         if (sendBtn != null) {

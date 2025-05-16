@@ -76,6 +76,11 @@ public class OverlayIcon {
                         params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY + (int) (event.getRawY() - initialTouchY);
                         windowManager.updateViewLayout(overlayIcon, params);       // 위치 갱신
+
+                        if(!firstClick){
+                            manager.iconPositionChanged(params.x,params.y);   // 위치변경알림
+                        }
+
                         return true;
 
                     case MotionEvent.ACTION_UP:    // 클릭 시 (눌렀다가 바로 뗌)
@@ -85,7 +90,7 @@ public class OverlayIcon {
 
                         if (touchDuration < CLICK_THRESHOLD && Math.abs(dx) < 10 && Math.abs(dy) < 10) {    // 짧은 터치 시간 + 거의 안움직임
                             if(firstClick){
-                                manager.showButton();   // 버튼 오버레이로 전환 요청
+                                manager.showButton();   // 버튼 오버레이 요청
                                 firstClick=!firstClick;
                             }else{
                                 manager.removeButton();
