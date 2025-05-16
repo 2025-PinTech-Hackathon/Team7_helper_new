@@ -44,12 +44,12 @@ public class OverlayButton {
         sendBtn = new Button(context);
         qrBtn=new Button(context);
         voiceBtn=new Button(context);
-        
+
         // 텍스트 설정
         sendBtn.setText("송금");
         qrBtn.setText("큐알 결제");
         voiceBtn.setText("음성");
-        
+
         // 버튼 디자인 설정
         sendBtn.setBackgroundResource(R.drawable.custom_button);
         qrBtn.setBackgroundResource(R.drawable.custom_button);
