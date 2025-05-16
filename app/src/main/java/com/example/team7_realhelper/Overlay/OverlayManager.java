@@ -80,8 +80,8 @@ public class OverlayManager {
 
         // 화면 중앙 높이 계산
         int screenHeight = windowManager.getDefaultDisplay().getHeight();
-        int highlightX = 40;
-        int highlightY = screenHeight / 2 - 930;
+        int highlightX = x;
+        int highlightY = screenHeight / 2 - y;
 
         WindowManager.LayoutParams highlightParams = new WindowManager.LayoutParams(
                 150, 150,
@@ -136,6 +136,6 @@ public class OverlayManager {
                 windowManager.removeView(tooltipView);
                 tooltipView = null;
             }
-        }, 10000);
+        }, 3000);
     }
 }

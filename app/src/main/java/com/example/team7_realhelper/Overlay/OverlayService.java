@@ -38,14 +38,16 @@ public class OverlayService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 좌표 전달 받기
-        int x = intent.getIntExtra("x", 300);
-        int y = intent.getIntExtra("y", 700);
+        int x = intent.getIntExtra("x", -1);
+        int y = intent.getIntExtra("y", -1);
 
-        overlayManager.showHighlightWithTooltip(x, y);
+        // 좌표가 유효할 때만 강조 표시 실행
+        if (x != -1 && y != -1) {
+            overlayManager.showHighlightWithTooltip(x, y);
+        }
 
         return START_NOT_STICKY;
     }
-
 
     @Override
     public void onDestroy() {

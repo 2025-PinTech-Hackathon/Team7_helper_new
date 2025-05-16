@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+import android.content.Intent;
 
 import com.example.team7_realhelper.R;
 
@@ -44,17 +45,11 @@ public class OverlayButton {
         sendBtn = new Button(context);
         qrBtn=new Button(context);
         voiceBtn=new Button(context);
-        
+
         // 텍스트 설정
         sendBtn.setText("송금");
         qrBtn.setText("큐알 결제");
         voiceBtn.setText("음성");
-        sendBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        qrBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        voiceBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-
-
-
 
         // 버튼 디자인 설정
         sendBtn.setBackgroundResource(R.drawable.custom_button);
@@ -73,7 +68,7 @@ public class OverlayButton {
 
         int baseX = manager.getIconX()-40;  // 좌측 위치 (x좌표)
         int baseY = manager.getIconY()+150; // 첫 번째 버튼의 y좌표 시작 위치
-        int buttonHeight = 80; // 버튼 높이 (LayoutParams 높이와 동일)
+        int buttonHeight = 60; // 버튼 높이 (LayoutParams 높이와 동일)
         int buttonWidth=250;
 
         sendParams = new WindowManager.LayoutParams(
@@ -117,26 +112,38 @@ public class OverlayButton {
 
         // 버튼 클릭 이벤트
         // 송금 버튼 클릭 시
-        sendBtn.setOnClickListener(v->{
-            remove();  // 버튼지우고
-            manager.setFirstClick(true);   // 다음 클릭시 버튼 다시 뜸
-            //manager.showHighlightWithTooltip(10,10);
+        sendBtn.setOnClickListener(v -> {
+            remove();
+            manager.setFirstClick(true);
+
+            // 좌표 넘겨서 강조 요청
+            Intent intent = new Intent(context, OverlayService.class);
+            intent.putExtra("x", 80);   // 송금 버튼 강조 좌표
+            intent.putExtra("y", 140);  // 실제 강조 Y 좌표
+            context.startService(intent);
         });
 
         // qr버튼 클릭 시
-        qrBtn.setOnClickListener(v->{
+        // QR 버튼 클릭 시
+        qrBtn.setOnClickListener(v -> {
             remove();
             manager.setFirstClick(true);
 
-
+            Intent intent = new Intent(context, OverlayService.class);
+            intent.putExtra("x", 870);  // QR 버튼에 맞는 좌표로 수정
+            intent.putExtra("y", 400); // 필요시 조정
+            context.startService(intent);
         });
 
         // 음성 버튼 클릭 시
-        voiceBtn.setOnClickListener(v->{
+        voiceBtn.setOnClickListener(v -> {
             remove();
             manager.setFirstClick(true);
 
-
+            Intent intent = new Intent(context, OverlayService.class);
+            intent.putExtra("x", 80);  // 음성 버튼에 맞는 좌표로 수정
+            intent.putExtra("y", 700); // 필요시 조정
+            context.startService(intent);
         });
 
 
@@ -146,7 +153,7 @@ public class OverlayButton {
     }
 
     public void updatePosition(int x,int y){
-        int buttonHeight = 80;
+        int buttonHeight = 60;
         sendParams.x=x-40;
         sendParams.y=y;
         windowManager.updateViewLayout(sendBtn,sendParams);
