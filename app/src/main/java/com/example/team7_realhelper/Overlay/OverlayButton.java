@@ -48,7 +48,13 @@ public class OverlayButton {
         sendBtn.setText("송금");
         qrBtn.setText("큐알 결제");
         voiceBtn.setText("음성");
-        
+        sendBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        qrBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        voiceBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+
+
+
+
         // 버튼 디자인 설정
         sendBtn.setBackgroundResource(R.drawable.custom_button);
         qrBtn.setBackgroundResource(R.drawable.custom_button);
@@ -66,7 +72,7 @@ public class OverlayButton {
 
         int baseX = manager.getIconX()-40;  // 좌측 위치 (x좌표)
         int baseY = manager.getIconY()+150; // 첫 번째 버튼의 y좌표 시작 위치
-        int buttonHeight = 60; // 버튼 높이 (LayoutParams 높이와 동일)
+        int buttonHeight = 80; // 버튼 높이 (LayoutParams 높이와 동일)
         int buttonWidth=250;
 
         sendParams = new WindowManager.LayoutParams(
@@ -113,7 +119,7 @@ public class OverlayButton {
         sendBtn.setOnClickListener(v->{
             remove();  // 버튼지우고
             manager.setFirstClick(true);   // 다음 클릭시 버튼 다시 뜸
-
+            //manager.showHighlightWithTooltip(10,10);
         });
 
         // qr버튼 클릭 시
@@ -129,7 +135,7 @@ public class OverlayButton {
             remove();
             manager.setFirstClick(true);
 
-            
+
         });
 
 
@@ -139,7 +145,7 @@ public class OverlayButton {
     }
 
     public void updatePosition(int x,int y){
-        int buttonHeight = 60;
+        int buttonHeight = 80;
         sendParams.x=x-40;
         sendParams.y=y;
         windowManager.updateViewLayout(sendBtn,sendParams);
