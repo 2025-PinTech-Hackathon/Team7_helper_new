@@ -34,6 +34,7 @@ public class OverlayButton {
     private Button voiceBtn;
     private WindowManager.LayoutParams voiceParams;
 
+
     // 생성자
     public OverlayButton(Context context, OverlayManager manager) {
         this.context = context;
@@ -50,6 +51,10 @@ public class OverlayButton {
         sendBtn.setText("송금");
         qrBtn.setText("큐알 결제");
         voiceBtn.setText("음성");
+
+        sendBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        qrBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        voiceBtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 
         // 버튼 디자인 설정
         sendBtn.setBackgroundResource(R.drawable.custom_button);
@@ -68,7 +73,7 @@ public class OverlayButton {
 
         int baseX = manager.getIconX()-40;  // 좌측 위치 (x좌표)
         int baseY = manager.getIconY()+150; // 첫 번째 버튼의 y좌표 시작 위치
-        int buttonHeight = 60; // 버튼 높이 (LayoutParams 높이와 동일)
+        int buttonHeight = 80; // 버튼 높이 (LayoutParams 높이와 동일)
         int buttonWidth=250;
 
         sendParams = new WindowManager.LayoutParams(
@@ -110,29 +115,71 @@ public class OverlayButton {
         voiceParams.y = baseY + buttonHeight * 2; // 두 번째 버튼 아래
 
 
+
+
         // 버튼 클릭 이벤트
         // 송금 버튼 클릭 시
         sendBtn.setOnClickListener(v -> {
             remove();
             manager.setFirstClick(true);
 
-            // 좌표 넘겨서 강조 요청
             Intent intent = new Intent(context, OverlayService.class);
-            intent.putExtra("x", 80);   // 송금 버튼 강조 좌표
-            intent.putExtra("y", 140);  // 실제 강조 Y 좌표
+            intent.putExtra("x1", 870);  // 1단계 좌표 (송금)
+            intent.putExtra("y1", 400);
+            intent.putExtra("width1", 150);
+            intent.putExtra("height1", 150);
+
+            intent.putExtra("x2", 480);  // 2단계 좌표 (계좌번호 입력)
+            intent.putExtra("y2", -640);
+            intent.putExtra("width2", 500);
+            intent.putExtra("height2", 120);
+
+            intent.putExtra("x3", 100);  // 3단계 좌표 (은행/증권사)
+            intent.putExtra("y3", 540);
+            intent.putExtra("width3", 500);
+            intent.putExtra("height3", 120);
+
+            intent.putExtra("x4", 60);  // 4단계 좌표 (카카오뱅크)
+            intent.putExtra("y4", 250);
+            intent.putExtra("width4", 220);
+            intent.putExtra("height4", 220);
+
+            intent.putExtra("x5", 100);  // 5단계 좌표 (확인)
+            intent.putExtra("y5", -575);
+            intent.putExtra("width5", 850);
+            intent.putExtra("height5", 150);
+
+            intent.putExtra("x6", 120);  // 6단계 좌표 (확인)
+            intent.putExtra("y6", -630);
+            intent.putExtra("width6", 850);
+            intent.putExtra("height6", 150);
+
+            intent.putExtra("x7", 430);  // 7단계 좌표 (보내기)
+            intent.putExtra("y7", -620);
+            intent.putExtra("width7", 600);
+            intent.putExtra("height7", 150);
+
+            intent.putExtra("x8", 430);  // 8단계 좌표 (확인)
+            intent.putExtra("y8", -620);
+            intent.putExtra("width8", 600);
+            intent.putExtra("height8", 150);
+
             context.startService(intent);
         });
 
         // qr버튼 클릭 시
-        // QR 버튼 클릭 시
         qrBtn.setOnClickListener(v -> {
             remove();
             manager.setFirstClick(true);
 
             Intent intent = new Intent(context, OverlayService.class);
-            intent.putExtra("x", 870);  // QR 버튼에 맞는 좌표로 수정
-            intent.putExtra("y", 400); // 필요시 조정
+            intent.putExtra("x1", 85);
+            intent.putExtra("y1", 140);
+            intent.putExtra("width1", 120);
+            intent.putExtra("height1", 120);
+
             context.startService(intent);
+
         });
 
         // 음성 버튼 클릭 시
@@ -153,7 +200,7 @@ public class OverlayButton {
     }
 
     public void updatePosition(int x,int y){
-        int buttonHeight = 60;
+        int buttonHeight = 80;
         sendParams.x=x-40;
         sendParams.y=y;
         windowManager.updateViewLayout(sendBtn,sendParams);

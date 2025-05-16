@@ -1,20 +1,28 @@
 package com.example.team7_realhelper.Overlay;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.os.Handler;
+
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
+import com.example.team7_realhelper.R;
+
+// 백그라운드에서 실행되는 서비스
 public class OverlayService extends Service {
-
-    private static final String CHANNEL_ID = "overlay_service_channel";
+    private WindowManager windowManager;  // 윈도우 관리하는 시스템 서비스 객체
+    //private ImageView overlayIcon;   // 오버레이 띄울 아이콘
+    private WindowManager.LayoutParams params;
+    private OverlayIcon overlayIcon;
 
     private OverlayManager overlayManager;
 
@@ -22,49 +30,35 @@ public class OverlayService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        createNotificationChannel();
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Overlay Service")
-                .setContentText("Overlay is running")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .build();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {  // API 29 이상
-            startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
-        } else {
-            startForeground(1, notification);
-        }
-
-        // 오버레이 매니저 초기화 및 아이콘 보여주기
         overlayManager = new OverlayManager(this);
         overlayManager.showIcon();
-    }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Overlay Service Channel",
-                    NotificationManager.IMPORTANCE_LOW
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
-        }
+    }
+    private void showHighlightsSequentially(int[] x, int[] y, int[] width, int[] height, int index) {
+        if (index >= x.length || x[index] == -1 || y[index] == -1) return;
+
+        overlayManager.showHighlightWithTooltip(x[index], y[index], width[index], height[index]);
+
+        new Handler().postDelayed(() -> {
+            showHighlightsSequentially(x, y, width, height, index + 1);
+        }, 3000); // 3초 후 다음 단계 실행
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // 좌표 전달 받기
-        int x = intent.getIntExtra("x", -1);
-        int y = intent.getIntExtra("y", -1);
+        int[] x = new int[8];
+        int[] y = new int[8];
+        int[] width = new int[8];
+        int[] height = new int[8];
 
-        // 좌표가 유효할 때만 강조 표시 실행
-        if (x != -1 && y != -1 && overlayManager != null) {
-            overlayManager.showHighlightWithTooltip(x, y);
+        for (int i = 0; i < 8; i++) {
+            x[i] = intent.getIntExtra("x" + (i + 1), -1);
+            y[i] = intent.getIntExtra("y" + (i + 1), -1);
+            width[i] = intent.getIntExtra("width" + (i + 1), 150);
+            height[i] = intent.getIntExtra("height" + (i + 1), 150);
         }
+
+        showHighlightsSequentially(x, y, width, height, 0);
 
         return START_NOT_STICKY;
     }
@@ -72,14 +66,12 @@ public class OverlayService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (overlayManager != null) {
-            overlayManager.removeAll();
-        }
+        overlayManager.removeAll();
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;  // 바인딩 서비스 아님
+        return null;
     }
 }
