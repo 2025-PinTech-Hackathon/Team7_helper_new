@@ -34,7 +34,7 @@ public class OverlayService extends Service {
 
     }
 
-/*
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 좌표 전달 받기
@@ -44,7 +44,7 @@ public class OverlayService extends Service {
         overlayManager.showHighlightWithTooltip(x, y);
 
         return START_NOT_STICKY;
-    }   */
+    }
 
 
     @Override
