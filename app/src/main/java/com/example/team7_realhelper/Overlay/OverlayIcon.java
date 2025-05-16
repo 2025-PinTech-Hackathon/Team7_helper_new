@@ -20,6 +20,8 @@ public class OverlayIcon {
 
     private OverlayButton overlayButton;
 
+    public boolean firstClick=true;
+
 
     private long touchStartTime;
     private static final int CLICK_THRESHOLD = 200;
@@ -56,7 +58,7 @@ public class OverlayIcon {
         overlayIcon.setOnTouchListener(new View.OnTouchListener() {
             private int initialX, initialY;
             private float initialTouchX, initialTouchY;
-            private boolean firstClick=true;   // 몇번째 클릭인지
+            //firstClick=true;   // 몇번째 클릭인지
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {

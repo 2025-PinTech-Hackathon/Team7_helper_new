@@ -10,6 +10,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.team7_realhelper.R;
 
@@ -105,6 +106,31 @@ public class OverlayButton {
         voiceParams.gravity = Gravity.TOP | Gravity.LEFT;
         voiceParams.x = baseX;
         voiceParams.y = baseY + buttonHeight * 2; // 두 번째 버튼 아래
+
+
+        // 버튼 클릭 이벤트
+        // 송금 버튼 클릭 시
+        sendBtn.setOnClickListener(v->{
+            remove();  // 버튼지우고
+            manager.setFirstClick(true);   // 다음 클릭시 버튼 다시 뜸
+
+        });
+
+        // qr버튼 클릭 시
+        qrBtn.setOnClickListener(v->{
+            remove();
+            manager.setFirstClick(true);
+
+
+        });
+
+        // 음성 버튼 클릭 시
+        voiceBtn.setOnClickListener(v->{
+            remove();
+            manager.setFirstClick(true);
+
+            
+        });
 
 
         windowManager.addView(sendBtn, sendParams);
