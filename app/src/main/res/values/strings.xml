@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Team7_RealHelper</string>
+    <string name="app_name">Team7 Helper</string>
+    <string name="accessibility_service_description">HelperApp 모니터링</string>
+
 </resources>

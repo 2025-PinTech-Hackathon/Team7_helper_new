@@ -1,26 +1,19 @@
 package com.example.team7_realhelper.Overlay;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
-import com.example.team7_realhelper.R;
-
-// 백그라운드에서 실행되는 서비스
 public class OverlayService extends Service {
-    private WindowManager windowManager;  // 윈도우 관리하는 시스템 서비스 객체
-    //private ImageView overlayIcon;   // 오버레이 띄울 아이콘
-    private WindowManager.LayoutParams params;
-    private OverlayIcon overlayIcon;
+
+    private static final String CHANNEL_ID = "overlay_service_channel";
 
     private OverlayManager overlayManager;
 
@@ -28,20 +21,46 @@ public class OverlayService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        createNotificationChannel();
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Overlay Service")
+                .setContentText("Overlay is running")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .build();
+
+        startForeground(1, notification);
+
+        // 오버레이 매니저 초기화 및 아이콘 보여주기
         overlayManager = new OverlayManager(this);
         overlayManager.showIcon();
+    }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Overlay Service Channel",
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        overlayManager.removeAll();
+        if (overlayManager != null) {
+            overlayManager.removeAll();
+        }
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return null;  // 바인딩 서비스 아님
     }
 }

@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
-import android.widget.Toast;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,53 +15,106 @@ import com.example.team7_realhelper.Overlay.OverlayService;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CODE_OVERLAY_PERMISSION = 1000;
+    private Handler handler = new Handler();
+    private Runnable checkRunnable;
+    private static final String TARGET_PACKAGE_NAME = "com.example.helperapp_hackathon_team7"; // 실제 targetapp 패키지명 입력
+
+    private static final int REQUEST_OVERLAY_PERMISSION = 1000;
+    private static final int REQUEST_USAGE_STATS_PERMISSION = 1001;
+
+    private UsageStatsHelper usageStatsHelper;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });*/
+        usageStatsHelper = new UsageStatsHelper(this);
 
-        // 권한 확인 및 요청
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.canDrawOverlays(this)) {  // 권한 없으면
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:" + getPackageName()));    // 권한 설정 화면으로
-                startActivityForResult(intent, REQUEST_CODE_OVERLAY_PERMISSION);
-                return;
-            }
+        if (!Settings.canDrawOverlays(this)) {
+            // 오버레이 권한 없으면 요청
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION);
+        } else if (!usageStatsHelper.hasUsageStatsPermission()) {
+            // 사용량 접근 권한 없으면 요청
+            requestUsageStatsPermission();
+        } else {
+            startCheckingForegroundApp();
         }
-        // 권한 있으면
-        startOverlayService();   // 오버레이 서비스 시작
-        finish();
     }
 
-    private void startOverlayService() {
-        startService(new Intent(this, OverlayService.class));
+    private void requestUsageStatsPermission() {
+        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        startActivityForResult(intent, REQUEST_USAGE_STATS_PERMISSION);
     }
 
-    // 권한 요청 화면에서 돌아왔을 때 호출
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {     // 권한 승인되었으면
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (Settings.canDrawOverlays(this)) {
-                    startOverlayService();    // 오버레이 시작
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_OVERLAY_PERMISSION) {
+            if (Settings.canDrawOverlays(this)) {
+                if (!usageStatsHelper.hasUsageStatsPermission()) {
+                    requestUsageStatsPermission();
                 } else {
-                    Toast.makeText(this, "오버레이 권한이 필요합니다.", Toast.LENGTH_LONG).show();
+                    startCheckingForegroundApp();
+
+
                 }
+            } else {
+                Log.e("MainActivity", "오버레이 권한이 필요합니다.");
+                // 필요하면 권한 없을 때 안내 다이얼로그 띄우기 or 종료 처리
+            }
+        } else if (requestCode == REQUEST_USAGE_STATS_PERMISSION) {
+            if (usageStatsHelper.hasUsageStatsPermission()) {
+                startCheckingForegroundApp();
+            } else {
+                Log.e("MainActivity", "사용량 접근 권한이 필요합니다.");
+                // 권한 없을 때 처리
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void startCheckingForegroundApp() {
+        checkRunnable = new Runnable() {
+            @Override
+            public void run() {
+                String foregroundApp = usageStatsHelper.getForegroundAppPackageName();
+                Log.d("MainActivity", "Foreground app: " + foregroundApp);
+
+                if (TARGET_PACKAGE_NAME.equals(foregroundApp)) {
+                    Log.d("MainActivity", "Target app detected! Starting OverlayService...");
+                    Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(serviceIntent);
+                    } else {
+                        startService(serviceIntent);
+
+
+                        finish();
+                    }
+                } else {
+                    // 타겟 앱이 아닐 경우 서비스 종료 (필요하면)
+                    Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
+                    stopService(serviceIntent);
+                }
+
+                handler.postDelayed(this, 1000);  // 3초마다 체크
+            }
+        };
+
+        handler.post(checkRunnable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null && checkRunnable != null) {
+            handler.removeCallbacks(checkRunnable);
+        }
+        // 앱 종료 시 서비스도 같이 종료
+        Intent serviceIntent = new Intent(MainActivity.this, OverlayService.class);
+        stopService(serviceIntent);
+    }
 }
