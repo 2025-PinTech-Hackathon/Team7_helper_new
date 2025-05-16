@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="#33FF0000" />  <!-- #33 = 20% 불투명도 -->
+    <stroke android:width="3dp" android:color="#FF8888" /> <!-- 밝은 빨강 테두리 -->
+    <corners android:radius="12dp" />
+</shape>
