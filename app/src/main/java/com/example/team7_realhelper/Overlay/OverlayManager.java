@@ -1,6 +1,9 @@
 package com.example.team7_realhelper.Overlay;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
@@ -8,10 +11,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 
 import com.example.team7_realhelper.R;
+
 
 public class OverlayManager {
     private final Context context;
@@ -71,6 +73,11 @@ public class OverlayManager {
         highlightView = new View(context);
         highlightView.setBackgroundResource(R.drawable.highlight_border);
 
+        // 화면 중앙 높이 계산
+        int screenHeight = windowManager.getDefaultDisplay().getHeight();
+        int highlightX = 40;
+        int highlightY = screenHeight / 2 - 930;
+
         WindowManager.LayoutParams highlightParams = new WindowManager.LayoutParams(
                 150, 150,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
@@ -80,8 +87,8 @@ public class OverlayManager {
                 PixelFormat.TRANSLUCENT
         );
         highlightParams.gravity = Gravity.TOP | Gravity.LEFT;
-        highlightParams.x = x;
-        highlightParams.y = y;
+        highlightParams.x = highlightX;
+        highlightParams.y = highlightY;
 
         windowManager.addView(highlightView, highlightParams);
 
@@ -102,8 +109,8 @@ public class OverlayManager {
                 PixelFormat.TRANSLUCENT
         );
         tooltipParams.gravity = Gravity.TOP | Gravity.LEFT;
-        tooltipParams.x = x + 160;
-        tooltipParams.y = y;
+        tooltipParams.x = highlightX;
+        tooltipParams.y = highlightY - 100;
 
         windowManager.addView(tooltipView, tooltipParams);
 
@@ -124,6 +131,6 @@ public class OverlayManager {
                 windowManager.removeView(tooltipView);
                 tooltipView = null;
             }
-        }, 20000);
+        }, 10000);
     }
 }
