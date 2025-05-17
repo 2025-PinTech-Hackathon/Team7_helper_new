@@ -70,23 +70,6 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        /*
-        int[] x = new int[8];
-        int[] y = new int[8];
-        int[] width = new int[8];
-        int[] height = new int[8];
-
-        for (int i = 0; i < 8; i++) {
-            x[i] = intent.getIntExtra("x" + (i + 1), -1);
-            y[i] = intent.getIntExtra("y" + (i + 1), -1);
-            width[i] = intent.getIntExtra("width" + (i + 1), 150);
-            height[i] = intent.getIntExtra("height" + (i + 1), 150);
-        }
-
-        showHighlightsSequentially(x, y, width, height, 0);
-
-        return START_NOT_STICKY;
-        */
         if (intent != null) {
             String cmd = intent.getStringExtra("command");
             if ("highlight_send".equals(cmd)) {
@@ -94,7 +77,7 @@ public class OverlayService extends Service {
                 int y = intent.getIntExtra("y", 500);
                 int width = intent.getIntExtra("width", 500);
                 int height = intent.getIntExtra("height", 100);
-                y = 1200-y;
+                y = 1170-y;
 
                 overlayManager.showHighlightWithTooltip(x, y, width, height);
             }
