@@ -54,6 +54,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".MyReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.HelperApp_Prototype.ACTION_BUTTON_INFO"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

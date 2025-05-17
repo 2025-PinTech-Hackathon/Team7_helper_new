@@ -231,6 +231,12 @@ public class OverlayButton {
             remove();
             manager.setFirstClick(true);
 
+            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+            intent.putExtra("button_click", "Send");
+            intent.setPackage("com.example.helperapp_hackathon_team7");
+            context.sendBroadcast(intent);
+            Log.e("Broadcast", "송금버튼클릭");
+            /*
             Intent intent = new Intent(context, OverlayService.class);
             intent.putExtra("x1", 870);  // 1단계 좌표 (송금)
             intent.putExtra("y1", 400);
@@ -273,6 +279,8 @@ public class OverlayButton {
             intent.putExtra("height8", 150);
 
             context.startService(intent);
+            */
+
         });
 
         // qr버튼 클릭 시
@@ -281,6 +289,13 @@ public class OverlayButton {
             remove();
             manager.setFirstClick(true);
 
+            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+            intent.putExtra("button_click", "QR");
+            intent.setPackage("com.example.helperapp_hackathon_team7");
+            context.sendBroadcast(intent);
+            Log.e("Broadcast", "qr버튼클릭");
+
+            /*
             Intent intent = new Intent(context, OverlayService.class);
             intent.putExtra("x1", 85);
             intent.putExtra("y1", 140);
@@ -288,6 +303,7 @@ public class OverlayButton {
             intent.putExtra("height1", 120);
 
             context.startService(intent);
+             */
 
         });
 

@@ -1,5 +1,8 @@
 package com.example.team7_realhelper.Overlay;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +10,7 @@ import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,9 +20,13 @@ import android.os.Handler;
 
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.example.team7_realhelper.OverlayControlReceiver;
 import com.example.team7_realhelper.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // 백그라운드에서 실행되는 서비스
 public class OverlayService extends Service {
@@ -26,15 +34,13 @@ public class OverlayService extends Service {
     //private ImageView overlayIcon;   // 오버레이 띄울 아이콘
     private WindowManager.LayoutParams params;
     private OverlayIcon overlayIcon;
-
+    private List<View> overlayViews = new ArrayList<>();
     private OverlayManager overlayManager;
     private OverlayControlReceiver receiver;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-
         overlayManager = new OverlayManager(this);
 
         receiver = new OverlayControlReceiver(overlayManager);
@@ -48,6 +54,7 @@ public class OverlayService extends Service {
 
 
         overlayManager.showIcon();
+        //startForegroundServiceWithNotification();
 
     }
 
@@ -63,6 +70,7 @@ public class OverlayService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        /*
         int[] x = new int[8];
         int[] y = new int[8];
         int[] width = new int[8];
@@ -78,12 +86,61 @@ public class OverlayService extends Service {
         showHighlightsSequentially(x, y, width, height, 0);
 
         return START_NOT_STICKY;
+        */
+        if (intent != null) {
+            String cmd = intent.getStringExtra("command");
+            if ("highlight_send".equals(cmd)) {
+                int x = intent.getIntExtra("x", 100);
+                int y = intent.getIntExtra("y", 500);
+                int width = intent.getIntExtra("width", 500);
+                int height = intent.getIntExtra("height", 100);
+                y = 1200-y;
+
+                overlayManager.showHighlightWithTooltip(x, y, width, height);
+            }
+        }
+        return START_NOT_STICKY;
+    }
+
+    private void startForegroundServiceWithNotification() {
+        String channelId = "overlay_channel";
+        String channelName = "Overlay Service";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    channelName,
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
+        }
+
+        Notification notification = new NotificationCompat.Builder(this, channelId)
+                .setContentTitle("Overlay Service Running")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .build();
+
+        startForeground(1, notification);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         overlayManager.removeAll();
+        if (windowManager != null) {
+            for (View view : overlayViews) {
+                try {
+                    windowManager.removeView(view);
+                } catch (IllegalArgumentException e) {
+                    Log.e("OverlayService", "View already removed during onDestroy", e);
+                }
+            }
+            overlayViews.clear();
+        }
+        //unregisterReceiver(buttonInfoReceiver);
     }
 
     @Nullable
