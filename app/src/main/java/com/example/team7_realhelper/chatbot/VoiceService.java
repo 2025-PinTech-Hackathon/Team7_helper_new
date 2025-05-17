@@ -91,6 +91,7 @@ public class VoiceService {
             ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             if (matches != null && !matches.isEmpty()) {
                 String result = matches.get(0);
+                Log.d("VC", "결과: " + result);
                 listener.onSpeechResult(result);
             } else {
                 listener.onSpeechError("인식 안됨");

@@ -66,48 +66,14 @@ public class OverlayButton {
                             remove();
                             manager.setFirstClick(true);
 
-                            Intent intent = new Intent(context, OverlayService.class);
-                            intent.putExtra("x1", 870);  // 1단계 좌표 (송금)
-                            intent.putExtra("y1", 400);
-                            intent.putExtra("width1", 150);
-                            intent.putExtra("height1", 150);
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            intent.putExtra("button_click", "Send");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            context.sendBroadcast(intent);
+                            Log.e("Broadcast", "송금버튼클릭");
 
-                            intent.putExtra("x2", 480);  // 2단계 좌표 (계좌번호 입력)
-                            intent.putExtra("y2", -640);
-                            intent.putExtra("width2", 500);
-                            intent.putExtra("height2", 120);
 
-                            intent.putExtra("x3", 100);  // 3단계 좌표 (은행/증권사)
-                            intent.putExtra("y3", 540);
-                            intent.putExtra("width3", 500);
-                            intent.putExtra("height3", 120);
 
-                            intent.putExtra("x4", 60);  // 4단계 좌표 (카카오뱅크)
-                            intent.putExtra("y4", 250);
-                            intent.putExtra("width4", 220);
-                            intent.putExtra("height4", 220);
-
-                            intent.putExtra("x5", 100);  // 5단계 좌표 (확인)
-                            intent.putExtra("y5", -575);
-                            intent.putExtra("width5", 850);
-                            intent.putExtra("height5", 150);
-
-                            intent.putExtra("x6", 120);  // 6단계 좌표 (확인)
-                            intent.putExtra("y6", -630);
-                            intent.putExtra("width6", 850);
-                            intent.putExtra("height6", 150);
-
-                            intent.putExtra("x7", 430);  // 7단계 좌표 (보내기)
-                            intent.putExtra("y7", -620);
-                            intent.putExtra("width7", 600);
-                            intent.putExtra("height7", 150);
-
-                            intent.putExtra("x8", 430);  // 8단계 좌표 (확인)
-                            intent.putExtra("y8", -620);
-                            intent.putExtra("width8", 600);
-                            intent.putExtra("height8", 150);
-
-                            context.startService(intent);
                         }
                         else if(fuc.equals("QR결제")){
                             Log.d("VC", "2");
@@ -115,17 +81,86 @@ public class OverlayButton {
                             remove();
                             manager.setFirstClick(true);
 
-                            Intent intent = new Intent(context, OverlayService.class);
-                            intent.putExtra("x1", 85);
-                            intent.putExtra("y1", 140);
-                            intent.putExtra("width1", 120);
-                            intent.putExtra("height1", 120);
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            intent.putExtra("button_click", "QR");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            context.sendBroadcast(intent);
+                            Log.e("Broadcast", "qr버튼클릭");
 
-                            context.startService(intent);
+
+
+
                         }
                         else if(fuc.equals("청구서")){
                             Log.d("VC", "3");
+
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            Log.d("VC", "4");
+                            intent.putExtra("button_click", "Bill");
+                            Log.d("VC", "5");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            Log.d("VC", "6");
+                            context.sendBroadcast(intent);
+                            Log.d("VC", "7");
+                            Log.e("Broadcast", "청구서 안내");
+
                         }
+                        else if(fuc.equals("해외결제")){
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            Log.d("VC", "4");
+                            intent.putExtra("button_click", "Oversea");
+                            Log.d("VC", "5");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            Log.d("VC", "6");
+                            context.sendBroadcast(intent);
+                            Log.d("VC", "7");
+                            Log.e("Broadcast", "청구서 안내");
+                        }
+                        else if(fuc.equals("멤버쉽")){
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            Log.d("VC", "4");
+                            intent.putExtra("button_click", "Membership");
+                            Log.d("VC", "5");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            Log.d("VC", "6");
+                            context.sendBroadcast(intent);
+                            Log.d("VC", "7");
+                            Log.e("Broadcast", "청구서 안내");
+                        }
+                        else if(fuc.equals("상품권")){
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            Log.d("VC", "4");
+                            intent.putExtra("button_click", "Gift");
+                            Log.d("VC", "5");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            Log.d("VC", "6");
+                            context.sendBroadcast(intent);
+                            Log.d("VC", "7");
+                            Log.e("Broadcast", "청구서 안내");
+                        }
+                        else if(fuc.equals("굿딜")){
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            Log.d("VC", "4");
+                            intent.putExtra("button_click", "GoodDeal");
+                            Log.d("VC", "5");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            Log.d("VC", "6");
+                            context.sendBroadcast(intent);
+                            Log.d("VC", "7");
+                            Log.e("Broadcast", "청구서 안내");
+                        }
+                        else if(fuc.equals("내주변")){
+                            Intent intent = new Intent("com.HelperApp_Prototype.ACTION_BUTTON_OVERLAY");
+                            Log.d("VC", "4");
+                            intent.putExtra("button_click", "Near");
+                            Log.d("VC", "5");
+                            intent.setPackage("com.example.helperapp_hackathon_team7");
+                            Log.d("VC", "6");
+                            context.sendBroadcast(intent);
+                            Log.d("VC", "7");
+                            Log.e("Broadcast", "청구서 안내");
+                        }
+
                         else{ //fuc == "X"
                             fuc = "error";
                             Log.d("VC", "4");
